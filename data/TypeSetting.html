@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="Big-5">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<style>
+ *{
+    font-family: '微軟正黑體';
+    font-size: 0.7rem;
+    color: rgba(0,48,95,1);
+    font-weight: bolder;
+    margin: 0.3rem;
+  }
+</style>
+<body>
+  <div id="app">
+    <div v-for="(title,index) in title">
+      <span>{{index+1}}.</span>
+      <a :href="link[index]"> {{title}}</a>
+      <br>
+    </div>
+  </div>
+
+</body>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.9/vue.min.js'></script>
+<script>
+  const data = new Vue({
+      el: "#app",
+      data: {
+        content:`
+        --不動產交易所得 - 新舊制簡易判斷
+        --https://sites.google.com/spgholdingsltd.com/videosharing/%E7%A8%85%E5%8B%99%E6%96%B0%E8%81%9E/%E5%8F%B0%E7%81%A3%E7%A8%85%E5%8B%99#h.th6jwouqnqw
+        --房地合一2.0完成協商 確定今年7月1日上路
+        --https://sites.google.com/spgholdingsltd.com/videosharing/%E7%A8%85%E5%8B%99%E6%96%B0%E8%81%9E/%E5%8F%B0%E7%81%A3%E7%A8%85%E5%8B%99#h.5wdjdowk8dho
+        
+        
+        
+        `,
+        title:[],
+        link:[],
+      },
+    })
+
+    start = function() {
+      data.content = data.content.split("--")
+      for(let i = 1; i<data.content.length; i++){
+        if(i%2==1){
+          data.title.push(data.content[i])
+        }else{
+          data.link.push(data.content[i])
+        }
+      }
+    }
+    start()
+</script>
+</html>

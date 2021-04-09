@@ -107,8 +107,15 @@
       <div class="backgroundLogo">
         <svg viewBox="0 0 408.73 416.94"><defs><style></style></defs><path class="cls-1" style="fill:#cda462;" d="M408.73,205.42H327.6v-.06l-30,0v.09H110.12c1.57-51.76,43-93.37,93.76-93.37,31.28,0,59,15.85,76.05,40.16h34.95c-20.24-42.07-62.39-71-111-71-67.31,0-122.19,55.44-123.78,124.2H30.15C28.74,167.86,44,125.79,71.62,92.79,105,52.85,150.9,30.87,200.74,30.87c108.1,0,152.13,85.65,153.91,89.27l.55,1.08.68,1a110.05,110.05,0,0,1,14,30h30.76c-4-22.71-16.4-42.1-19.83-47.13C374.58,93.05,322.14,0,200.74,0,142,0,88,25.81,48.85,72.64,11.92,116.88-5.73,173.11,1.65,223.18L3.57,236H60.91v.26H80v96.6a173.69,173.69,0,0,1-30.51-44.84H16.62c25.29,63.15,68.95,94.67,103,110.22,40,18.21,74.82,18.67,78.05,18.67h.19c101.66,0,153.43-53.25,179-97.95,27.31-47.76,30.67-95.09,30.83-97.13ZM293.64,236.29c-11.6,39.64-47.48,68.6-89.76,68.6s-78.22-29-89.85-68.6ZM351,303.37c-31.34,54.86-82.86,82.73-153.24,82.73h0c-1.54,0-45-.46-87.68-28.13V291.41c22.7,27.15,56.31,44.31,93.82,44.31,59,0,108.41-42.6,120.78-99.43h50.69C372.31,252.26,365.59,277.8,351,303.37Z"/></svg>
       </div>
-      <div class="article">
-        
+      <div v-for="(article,index) in content" class="article">
+        <div class="pic" :style="photo.style" v-if="index===photo.index" v-for ="photo in photos">
+          <a :href="photo.src">
+            <img class='img' :src='photo.src'>
+          </a>
+          <p class="remark">{{photo.remark}}</p>
+        </div>
+        <h2 class="spcialText text" v-if="article.slice(0,2)==='!!'">{{article.slice(2,article.length)}}</h2>
+        <p class="text" v-else>{{article}}</p>
       </div>
     </div>
     <div class="footer">
@@ -127,101 +134,9 @@
   </div>
 
 </body>
-<!-- <script src='https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.9/vue.min.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.9/vue.min.js'></script>
 <script>
   const data = new Vue({
       el: "#app",
-      data: {
-        link:'',
-        title:'',
-        content:``,
-        source:'',
-        date: '202104',
-        photos:[
-          {
-            src:'',
-            index:0,
-            remark:'',
-            style:{margin:"auto"}
-            // margin:"auto"
-            // float:"right"
-            // flat:"left"
-          },
-        ]
-      },
-    })
-    
-
-    start = function() {
-      data.content = data.content.split("--")
-      let date = []
-      date.push(data.date.slice(0,4))
-      date.push(data.date.slice(4,6))
-      date.push(data.date.slice(6,8))
-      console.log(date);
-      switch (date[1]) {
-        case '01' :
-          date[1] = 'Jan.'
-          break;
-        case '02' :
-          date[1] = 'Feb.'
-          break;
-        case '03' :
-          date[1] = 'Mar.'
-          break;
-        case '04' :
-          date[1] = 'Apr.'
-          break;
-        case '05' :
-          date[1] = 'May'
-          break;
-        case '06' :
-          date[1] = 'Jun.'
-          break;
-        case '07' :
-          date[1] = 'Jul.'
-          break;
-        case '08' :
-          date[1] = 'Aug.'
-          break;
-        case '09' :
-          date[1] = 'Sep.'
-          break;
-        case '10' :
-          date[1] = 'Oct.'
-          break;
-        case '11' :
-          date[1] = 'Nov.'
-          break;
-        case '12' :
-          date[1] = 'Dec.'
-          break;
-        default:
-          break;
-      }
-      data.date = `${date[1]} ${date[2]}, ${date[0]}`
-      
-      if (data.link.includes('//udn.com/')){
-        data.source = '聯合新聞網'
-      } else if(data.link.includes('//money.udn.com/')){
-        data.source = '經濟日報'
-      } else if(data.link.includes('//today.line.me/')){
-        data.source = 'LINE Today'
-      } else if(data.link.includes('//hk.bbwhk.com/')){
-        data.source = '彭博商業周刊'
-      } else if(data.link.includes('//www.chinatimes.com')){
-        data.source = '中時新聞網'
-      } else if(data.link.includes('//www.businesstoday.com')){
-        data.source = '今周刊'
-      } else if(data.link.includes('//finance.ettoday.net')){
-        data.source = 'ETtoday財經雲'
-      } else if(data.link.includes('//ctee.com.tw/')){
-        data.source = '工商時報'
-      } else if(data.link.includes('//ec.ltn.com.tw')){
-        data.source = '自由時報'
-      }
-    }
-
-    start()
-</script> -->
-</html>
+        data: {
+          

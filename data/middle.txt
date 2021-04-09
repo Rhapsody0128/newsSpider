@@ -1,0 +1,16 @@
+       link:'',
+        title:'',
+        content:``,
+        source:'',
+        date: '',
+        photos:[
+          {
+            src:'',
+            index:0,
+            remark:'',
+            style:{margin:"auto"}
+            // margin:"auto"
+            // float:"right"
+            // flat:"left"
+          },
+        ]
