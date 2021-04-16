@@ -113,7 +113,7 @@
           </a>
           <p class="remark">{{photo.remark}}</p>
         </div>
-        <h2 class="spcialText text" v-if="paragraph.slice(0,2)==='!!'">{{paragraph.slice(2,z.length)}}</h2>
+        <h2 class="spcialText text" v-if="paragraph.slice(0,2)==='!!'">{{paragraph.slice(2,paragraph.length)}}</h2>
         <p class="text" v-else>{{paragraph}}</p>
       </div>
     </div>
