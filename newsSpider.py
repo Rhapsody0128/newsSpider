@@ -8,32 +8,31 @@ from bs4 import BeautifulSoup
 # News物件 -------------------------------------------------
 class News():
 	def __init__(self,url):
-		self.date = self.dateToString(datetime.date.today())
+		self.date = datetime.date.today().strftime("%b. %d, %Y")
 		self.url = url
 		self.source = self.getSource(url)
 		self.title = None
 		self.article = None
 		self.soup = None
-		
-	def dateToString(self,date):
-		monthDict = {
-			"01":"Jan.",
-			"02":"Feb.",
-			"03":"Mar.",
-			"04":"Apr.",
-			"05":"May",
-			"06":"Jun.",
-			"07":"Jul.",
-			"08":"Aug.",
-			"09":"Sep.",
-			"10":"Oct.",
-			"11":"Nov.",
-			"12":"Dec.",
-		}
-		dateArr = str(date).split("-")
-		dateArr[1] = monthDict.get(dateArr[1],'None')
-		dateString = f"{dateArr[1]} {dateArr[2]}, {dateArr[0]}"
-		return dateString
+	# def dateToString(self,date):
+	# 	monthDict = {
+	# 		"01":"Jan.",
+	# 		"02":"Feb.",
+	# 		"03":"Mar.",
+	# 		"04":"Apr.",
+	# 		"05":"May",
+	# 		"06":"Jun.",
+	# 		"07":"Jul.",
+	# 		"08":"Aug.",
+	# 		"09":"Sep.",
+	# 		"10":"Oct.",
+	# 		"11":"Nov.",
+	# 		"12":"Dec.",
+	# 	}
+	# 	dateArr = str(date).split("-")
+	# 	dateArr[1] = monthDict.get(dateArr[1],'None')
+	# 	dateString = f"{dateArr[1]} {dateArr[2]}, {dateArr[0]}"
+	# 	return dateString
 
 	def getData(self):	
 		link = f"link:'{self.url}',\n"
@@ -72,14 +71,14 @@ class LineNews(News):
 			self.content = []
 			self.photos = []
 			article = self.soup.find('article')
-			for index,item in enumerate(article,start=0):
+			for item in article:
 				if item.find('img'):
 					self.content.append('')
 					src = item.find('img').get("data-src")
 					remark = item.find("figcaption").getText()
 					photo = {
 						"src":src,
-            "index":index,
+            "index":article.index(item),
             "remark":remark,
             "style":{'margin':"auto"}
 					}
@@ -100,8 +99,6 @@ class undMoneyNews(News):
 			response = requests.get(url,headers=headers)
 			self.soup = BeautifulSoup(response.text, "html.parser")
 
-			print(self.soup)
-
 			self.title = self.soup.find("h2",id="story_art_title").getText().strip()
 			self.content = []
 			self.photos = []
@@ -120,7 +117,7 @@ class undMoneyNews(News):
 					self.photos.append(photo)
 				else:
 					if item.find('a'):
-						print('zz')
+						continue
 					elif item.find("b"):
 						self.content.append("!!"+item.getText())
 					else :
@@ -159,12 +156,66 @@ class chinaTimesNews(News):
 				else :
 					self.content.append(item.getText())
 
+class commercialNews(News):
+  def __init__(self,url):
+			super().__init__(url)
+			response = requests.get(url)
+			self.soup = BeautifulSoup(response.text, "html.parser")
+			self.title = self.soup.find("span",class_="post-title").getText().strip()
+			
+			self.content = []
+			self.photos = []
+
+			topPhoto = self.soup.find('figure')
+
+			photo = topPhoto.find("img")
+			if photo != -1 :
+				self.content.append('')
+				src = photo.get("data-src")
+				remark = photo.parent.parent.find("figcaption").getText()
+				photo = {
+					"src":src,
+          "index":0,
+          "remark":remark,
+          "style":{'margin':"auto"}
+				}
+				self.photos.append(photo)
+			article = self.soup.find('div',class_='entry-content')
+			for item in article:
+				if item.find('figure'):
+					photo = item.find("img")
+					self.content.append('')
+					if photo != -1 :
+						src = photo.get("src")
+						remark = photo.parent.parent.find("figcaption")
+						if(remark != -1 and remark != None):
+							remark = remark.getText()
+						else:
+							remark = ''
+						photo = {
+							"src":src,
+							"index":article.index(item),
+							"remark":remark,
+							"style":{'margin':"auto"}
+						}
+						self.photos.append(photo)
+				if item.find('a'):
+					continue
+				elif item.find('strong'):
+					continue
+				elif item.name == "h3":
+					self.content.append("!!"+item.getText())
+				else :
+					self.content.append(item.getText())
+
+
 
 # 執行 --------------------------------------
 sourceDict = {
   "today.line.me":"LINE Today",
   "money.udn.com":"經濟日報",
-	"www.chinatimes.com":"中時新聞網"
+	"www.chinatimes.com":"中時新聞網",
+	"ctee.com.tw":"工商時報"
 }
 
 def createNews(source,url):
@@ -175,6 +226,8 @@ def createNews(source,url):
     news=undMoneyNews(url)
   elif(source == "www.chinatimes.com"):
     news=chinaTimesNews(url)
+  elif(source == "ctee.com.tw"):
+    news=commercialNews(url)
   news.createHTML()
 
 
