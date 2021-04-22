@@ -5,7 +5,11 @@ import datetime
 import os
 from bs4 import BeautifulSoup
 
+import re
+
 # News物件 -------------------------------------------------
+
+
 class News():
 	def __init__(self,url):
 		self.date = datetime.date.today().strftime("%b. %d, %Y")
@@ -14,27 +18,15 @@ class News():
 		self.title = None
 		self.article = None
 		self.soup = None
-	# def dateToString(self,date):
-	# 	monthDict = {
-	# 		"01":"Jan.",
-	# 		"02":"Feb.",
-	# 		"03":"Mar.",
-	# 		"04":"Apr.",
-	# 		"05":"May",
-	# 		"06":"Jun.",
-	# 		"07":"Jul.",
-	# 		"08":"Aug.",
-	# 		"09":"Sep.",
-	# 		"10":"Oct.",
-	# 		"11":"Nov.",
-	# 		"12":"Dec.",
-	# 	}
-	# 	dateArr = str(date).split("-")
-	# 	dateArr[1] = monthDict.get(dateArr[1],'None')
-	# 	dateString = f"{dateArr[1]} {dateArr[2]}, {dateArr[0]}"
-	# 	return dateString
 
-	def getData(self):	
+	def removePunctuation(self,word):
+		replaceWord = ''
+		for char in word: 
+			replaceChar = re.sub('/', '月', char) 
+			replaceWord += replaceChar
+		return replaceWord
+
+	def getData(self):
 		link = f"link:'{self.url}',\n"
 		title = f"title:'{self.title}',\n"
 		content = f"content:{self.content},\n"
@@ -67,7 +59,7 @@ class LineNews(News):
 			super().__init__(url)
 			response = requests.get(url)
 			self.soup = BeautifulSoup(response.text, "html.parser")
-			self.title = self.soup.find("h1",class_="entityTitle").getText().strip()
+			self.title = self.removePunctuation(self.soup.find("h1",class_="entityTitle").getText().strip())
 			self.content = []
 			self.photos = []
 			article = self.soup.find('article')
@@ -218,18 +210,25 @@ sourceDict = {
 	"ctee.com.tw":"工商時報"
 }
 
-def createNews(source,url):
-  news = News
-  if(source == "today.line.me"):
-    news=LineNews(url)
-  elif(source == "money.udn.com"):
-    news=undMoneyNews(url)
-  elif(source == "www.chinatimes.com"):
-    news=chinaTimesNews(url)
-  elif(source == "ctee.com.tw"):
-    news=commercialNews(url)
-  news.createHTML()
+allTitle=[]
+allUrl=[]
+date=''
 
+def createNews(source,url):
+	news = News
+	if(source == "today.line.me"):
+		news=LineNews(url)
+	elif(source == "money.udn.com"):
+		news=undMoneyNews(url)
+	elif(source == "www.chinatimes.com"):
+		news=chinaTimesNews(url)
+	elif(source == "ctee.com.tw"):
+		news=commercialNews(url)
+	news.createHTML()
+	allUrl.append(input(f"{news.title}\n所對應的網址是?"))
+	allTitle.append(news.title)
+	date = news.date
+	
 
 def autoCreate():
 	newsUrl = open("news.txt",'r',encoding="utf-8")
@@ -237,6 +236,18 @@ def autoCreate():
 		for source in sourceDict:
 			if(source in news):
 				createNews(source,news.strip())
+	
+	top = open("data/typeTop.txt",'r',encoding="utf-8")
+	bottom = open("data/typeBottom.txt",'r',encoding="utf-8")
+	data = f"title:{allTitle},\nlink:{allUrl}"
+	result = top.read() + data + bottom.read()
+	path = f'C:\\Users\Asus\Desktop\E-News\{date}'
+	if not os.path.isdir(path):
+		os.makedirs(path)
+	name = 'typeSetting'
+	html = open (f"{path}\{name}.html","w",encoding="utf-8")
+	html.write(result)
+	html.close()
 
 autoCreate()
 

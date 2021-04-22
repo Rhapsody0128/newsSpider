@@ -29,39 +29,4 @@
   const data = new Vue({
       el: "#app",
       data: {
-        content:`
         
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        `,
-        title:[],
-        link:[],
-      },
-    })
-
-    start = function() {
-      data.content = data.content.split("--")
-      for(let i = 1; i<data.content.length; i++){
-        if(i%2==1){
-          data.title.push(data.content[i])
-        }else{
-          data.link.push(data.content[i])
-        }
-      }
-    }
-    start()
-</script>
-</html>

@@ -29,39 +29,9 @@
   const data = new Vue({
       el: "#app",
       data: {
-        content:`
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        `,
-        title:[],
-        link:[],
+        title:['4月21早盤獵報：史無前例! 面板報價連漲 12 月，這 1 檔「中小尺寸面板廠」漲贏群創友達', '晶圓代工報價漲不停 矽創、昇佳跟進', '台積192億公司債 完成定價'],
+link:['zz', 'bb', 'aa']
       },
     })
-
-    start = function() {
-      data.content = data.content.split("--")
-      for(let i = 1; i<data.content.length; i++){
-        if(i%2==1){
-          data.title.push(data.content[i])
-        }else{
-          data.link.push(data.content[i])
-        }
-      }
-    }
-    start()
 </script>
 </html>
