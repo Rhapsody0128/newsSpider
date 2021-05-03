@@ -12,7 +12,7 @@ import re
 
 class News():
 	def __init__(self,url):
-		self.date = datetime.date.today().strftime("%b. %d, %Y")
+		self.date = system.date
 		self.url = url
 		self.source = self.getSource(url)
 		self.title = None
@@ -22,7 +22,7 @@ class News():
 	def removePunctuation(self,word):
 		replaceWord = ''
 		for char in word: 
-			replaceChar = re.sub('/', '月', char) 
+			replaceChar = re.sub('/', '.', char) 
 			replaceWord += replaceChar
 		return replaceWord
 
@@ -36,9 +36,13 @@ class News():
 		return link + title + content + source + date + photos
 
 	def getSource(self,url):
-		sourceArr = url.split('/')
-		source = sourceDict[sourceArr[2]]
-		return source
+		if (url in'http'):
+			sourceArr = url.split('/')
+			for source in system.sourceDict :
+				if (source in sourceArr[2]):
+					return system.sourceDict[source]
+		else :
+			return url
 
 	def createHTML(self):
 		top = open("data/top.txt",'r',encoding="utf-8")
@@ -48,6 +52,17 @@ class News():
 		if not os.path.isdir(path):
 			os.makedirs(path)
 		html = open (f"{path}\{self.title}.html","w",encoding="utf-8")
+		html.write(result)
+		html.close()
+
+	def createTXT(self):
+		top = open("data/top.txt",'r',encoding="utf-8")
+		bottom = open("data/bottom.txt",'r',encoding="utf-8")
+		result = top.read() + self.getData() + bottom.read()
+		path = f'C:\\Users\Asus\Desktop\E-News\{self.date}'
+		if not os.path.isdir(path):
+			os.makedirs(path)
+		html = open (f"{path}\{self.title}.txt","w",encoding="utf-8")
 		html.write(result)
 		html.close()
 
@@ -127,8 +142,8 @@ class chinaTimesNews(News):
 			self.photos = []
 
 			topPhoto = self.soup.find("figure")
-			photo = topPhoto.find("img")
-			if photo != -1 :
+			if topPhoto != None :
+				photo = topPhoto.find("img")
 				self.content.append('')
 				src = photo.get("src")
 				remark = photo.parent.parent.find("figcaption").getText()
@@ -148,6 +163,7 @@ class chinaTimesNews(News):
 				else :
 					self.content.append(item.getText())
 
+
 class commercialNews(News):
   def __init__(self,url):
 			super().__init__(url)
@@ -160,8 +176,8 @@ class commercialNews(News):
 
 			topPhoto = self.soup.find('figure')
 
-			photo = topPhoto.find("img")
-			if photo != -1 :
+			if topPhoto != None :
+				photo = topPhoto.find("img")
 				self.content.append('')
 				src = photo.get("data-src")
 				remark = photo.parent.parent.find("figcaption").getText()
@@ -203,51 +219,57 @@ class commercialNews(News):
 
 
 # 執行 --------------------------------------
-sourceDict = {
-  "today.line.me":"LINE Today",
-  "money.udn.com":"經濟日報",
-	"www.chinatimes.com":"中時新聞網",
-	"ctee.com.tw":"工商時報"
-}
 
-allTitle=[]
-allUrl=[]
-date=''
+class System():
+	def __init__(self):
+		self.sourceDict = {
+			"today.line.me":"LINE Today",
+			"money.udn.com":"經濟日報",
+			"www.chinatimes.com":"中時新聞網",
+			"ctee.com.tw":"工商時報"
+		}
+		self.allTitle = []
+		self.allUrl = []
+		self.date=datetime.date.today().strftime("%b. %d, %Y")
 
-def createNews(source,url):
-	news = News
-	if(source == "today.line.me"):
-		news=LineNews(url)
-	elif(source == "money.udn.com"):
-		news=undMoneyNews(url)
-	elif(source == "www.chinatimes.com"):
-		news=chinaTimesNews(url)
-	elif(source == "ctee.com.tw"):
-		news=commercialNews(url)
-	news.createHTML()
-	allUrl.append(input(f"{news.title}\n所對應的網址是?"))
-	allTitle.append(news.title)
-	date = news.date
-	
+	def createNews(self,source,url):
+		news = News
+		if(source == "today.line.me"):
+			news=LineNews(url)
+		elif(source == "money.udn.com"):
+			news=undMoneyNews(url)
+		elif(source == "www.chinatimes.com"):
+			news=chinaTimesNews(url)
+		elif(source == "ctee.com.tw"):
+			news=commercialNews(url)
+		news.createHTML()
+		news.createTXT()
+		self.allUrl.append(input(f"{news.title}\n所對應的網址是?"))
+		self.allTitle.append(news.title)
+		
 
-def autoCreate():
-	newsUrl = open("news.txt",'r',encoding="utf-8")
-	for news in newsUrl:
-		for source in sourceDict:
-			if(source in news):
-				createNews(source,news.strip())
-	
-	top = open("data/typeTop.txt",'r',encoding="utf-8")
-	bottom = open("data/typeBottom.txt",'r',encoding="utf-8")
-	data = f"title:{allTitle},\nlink:{allUrl}"
-	result = top.read() + data + bottom.read()
-	path = f'C:\\Users\Asus\Desktop\E-News\{date}'
-	if not os.path.isdir(path):
-		os.makedirs(path)
-	name = 'typeSetting'
-	html = open (f"{path}\{name}.html","w",encoding="utf-8")
-	html.write(result)
-	html.close()
+	def createTypeHTML(self):
+		top = open("data/typeTop.txt",'r',encoding="utf-8")
+		bottom = open("data/typeBottom.txt",'r',encoding="utf-8")
+		data = f"title:{self.allTitle},\nlink:{self.allUrl}"
+		result = top.read() + data + bottom.read()
+		path = f'C:\\Users\Asus\Desktop\E-News\{self.date}'
+		if not os.path.isdir(path):
+			os.makedirs(path)
+		name = 'typeSetting'
+		html = open (f"{path}\{name}.html","w",encoding="utf-8")
+		html.write(result)
+		html.close()
 
-autoCreate()
+	def autoCreate(self):
+		newsUrl = open("news.txt",'r',encoding="utf-8")
+		for news in newsUrl:
+			for source in self.sourceDict:
+				if(source in news):
+					self.createNews(source,news.strip())
+		self.createTypeHTML()
+		print('已完成')
+
+system = System()
+system.autoCreate()
 
