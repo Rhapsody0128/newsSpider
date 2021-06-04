@@ -36,13 +36,10 @@ class News():
 		return link + title + content + source + date + photos
 
 	def getSource(self,url):
-		if (url in'http'):
-			sourceArr = url.split('/')
-			for source in system.sourceDict :
-				if (source in sourceArr[2]):
-					return system.sourceDict[source]
-		else :
-			return url
+		sourceArr = url.split('/')
+		for source in system.sourceDict :
+			if (source in sourceArr[2]):
+				return system.sourceDict[source]
 
 	def createHTML(self):
 		top = open("data/top.txt",'r',encoding="utf-8")
