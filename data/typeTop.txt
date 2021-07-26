@@ -19,8 +19,19 @@
   <div id="app">
     <div v-for="(title,index) in title">
       <span>{{index+1}}.</span>
-      <a :href="link[index]"> {{title}}</a>
+      <a :href="link[index]"> {{title}}:</a>
       <br>
+      <a :href="link[index]"> {{link[index]}}</a>
+      <br>
+      <br>
+    </div>
+    <br>
+    <br>
+    <div>
+      <p>如希望看到歷史新聞，SPG幫您整理最重要的...</p>
+      <a href="https://sites.google.com/spgholdingsltd.com/videosharing/%E8%B2%A1%E7%B6%93%E6%96%B0%E8%81%9E?authuser=0">財經新聞:https://sites.google.com/spgholdingsltd.com/videosharing/%E8%B2%A1%E7%B6%93%E6%96%B0%E8%81%9E?authuser=0</a>
+      <br>
+      <a href="https://sites.google.com/spgholdingsltd.com/videosharing/%E7%A8%85%E5%8B%99%E6%96%B0%E8%81%9E?authuser=0">稅務新聞:https://sites.google.com/spgholdingsltd.com/videosharing/%E7%A8%85%E5%8B%99%E6%96%B0%E8%81%9E?authuser=0</a>
     </div>
   </div>
 </body>

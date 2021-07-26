@@ -22,7 +22,9 @@ class News():
 	def removePunctuation(self,word):
 		replaceWord = ''
 		for char in word: 
-			replaceChar = re.sub('/', '.', char) 
+			
+			replaceChar = re.sub('\?', '', char) 
+			# replaceChar = re.sub('/', '.', char) 
 			replaceWord += replaceChar
 		return replaceWord
 
@@ -136,7 +138,6 @@ class chinaTimesNews(News):
 			response = requests.get(url)
 			self.soup = BeautifulSoup(response.text, "html.parser")
 			self.title = self.removePunctuation(self.soup.find("h1",class_="article-title").getText().strip())
-			
 			self.content = []
 			self.photos = []
 
@@ -169,7 +170,7 @@ class commercialNews(News):
 			response = requests.get(url)
 			self.soup = BeautifulSoup(response.text, "html.parser")
 			self.title = self.removePunctuation(self.soup.find("span",class_="post-title").getText().strip())
-			
+	
 			self.content = []
 			self.photos = []
 
@@ -209,7 +210,7 @@ class commercialNews(News):
 				if item.find('a'):
 					continue
 				elif item.find('strong'):
-					continue
+					self.content.append("!!"+item.getText())
 				elif item.name == "h3":
 					self.content.append("!!"+item.getText())
 				else :
