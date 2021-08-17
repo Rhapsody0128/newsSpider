@@ -22,9 +22,10 @@ class News():
 	def removePunctuation(self,word):
 		replaceWord = ''
 		for char in word: 
-			
-			replaceChar = re.sub('\?', '', char) 
-			# replaceChar = re.sub('/', '.', char) 
+			if (char == '\?'):
+				replaceChar = re.sub('\?', '', char) 
+			elif (char == '/'):
+				replaceChar = re.sub('/', '.', char) 
 			replaceWord += replaceChar
 		return replaceWord
 
@@ -47,7 +48,7 @@ class News():
 		top = open("data/top.txt",'r',encoding="utf-8")
 		bottom = open("data/bottom.txt",'r',encoding="utf-8")
 		result = top.read() + self.getData() + bottom.read()
-		path = f'C:\\Users\RhaPsoDy\Desktop\E-News\{self.date}'
+		path = f'C:\\Users\Asus\Desktop\E-News\{self.date}'
 		if not os.path.isdir(path):
 			os.makedirs(path)
 		html = open (f"{path}\{self.title}.html","w",encoding="utf-8")
@@ -58,7 +59,7 @@ class News():
 		top = open("data/top.txt",'r',encoding="utf-8")
 		bottom = open("data/bottom.txt",'r',encoding="utf-8")
 		result = top.read() + self.getData() + bottom.read()
-		path = f'C:\\Users\RhaPsoDy\Desktop\E-News\{self.date}'
+		path = f'C:\\Users\Asus\Desktop\E-News\{self.date}'
 		if not os.path.isdir(path):
 			os.makedirs(path)
 		html = open (f"{path}\{self.title}.txt","w",encoding="utf-8")
@@ -253,7 +254,7 @@ class System():
 		bottom = open("data/typeBottom.txt",'r',encoding="utf-8")
 		data = f"title:{self.allTitle},\nlink:{self.allUrl}"
 		result = top.read() + data + bottom.read()
-		path = f'C:\\Users\RhaPsoDy\Desktop\E-News\{self.date}'
+		path = f'C:\\Users\Asus\Desktop\E-News\{self.date}'
 		if not os.path.isdir(path):
 			os.makedirs(path)
 		name = 'typeSetting'

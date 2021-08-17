@@ -87,9 +87,12 @@
     color: #19355b;
     word-wrap:break-word;
   }
+  [v-cloak] {
+    display: none;
+  }
 </style>
 <body>
-  <div id="app">
+  <div id="app" v-cloak v-once>
     <div class="article">
       <div v-for="(paragraph,index) in content" class="paragraph">
         <div class="pic" :style="photo.style" v-if="index===photo.index" v-for ="photo in photos">
