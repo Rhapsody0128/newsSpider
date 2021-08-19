@@ -22,10 +22,12 @@ class News():
 	def removePunctuation(self,word):
 		replaceWord = ''
 		for char in word: 
-			if (char == '\?'):
-				replaceChar = re.sub('\?', '', char) 
+			replaceChar = char
+			if (char == '?'):
+				replaceChar = re.sub('?', '？', char) 
 			elif (char == '/'):
-				replaceChar = re.sub('/', '.', char) 
+				replaceChar = re.sub('/', '／', char) 
+			print(replaceChar)
 			replaceWord += replaceChar
 		return replaceWord
 
